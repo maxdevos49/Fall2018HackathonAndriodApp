@@ -15,6 +15,7 @@ public class DevicePhotoList {
 
     private static final String[] projection = new String[] {
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATA
     };
@@ -60,16 +61,21 @@ public class DevicePhotoList {
             do {
 
                 String bucketName = cur.getString(bucketNameIndex);
-                //String bucketId = cur.getString(bucketIdColumn);
-                String bucketId = "Test";
+                int bucketId = cur.getInt(bucketIdColumn);
                 String imageUri = cur.getString(imageUriIndex);
                 String imageId = cur.getString(imageIdColumn);
 
                 DeviceAlbum album = getAlbum(bucketName, bucketId);
 
-                album.addPhoto(new DevicePhoto(imageId, imageUri));
+                if (album == null) {
+                    Log.i(LOG_ID, "Creating new Device Album with name: " + bucketName + " id: " + bucketId);
+                    album = new DeviceAlbum(bucketName, bucketId);
+                    albums.add(album);
 
-                listener.albumLoaded(album);
+                    listener.albumLoaded(album);
+                }
+
+                album.addPhoto(new DevicePhoto(imageId, imageUri));
 
             } while (cur.moveToNext());
 
@@ -79,13 +85,14 @@ public class DevicePhotoList {
 
     }
 
-    private DeviceAlbum getAlbum(String name, String id) {
+    private DeviceAlbum getAlbum(String name, int id) {
+
         for (DeviceAlbum album : albums) {
-            if (album.getAlbumName().equals(name)) {
+            if (id == album.getAlbumId()) {
                 return album;
             }
         }
-        return new DeviceAlbum(name, id);
+        return null;
     }
 
     public List<DeviceAlbum> getAlbums() {

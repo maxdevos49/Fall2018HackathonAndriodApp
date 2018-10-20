@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
 
 import com.example.naber.fall2018hackathonandroidapp.R;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.AlbumLoadedListener;
@@ -50,11 +51,11 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
 
     private void addAlbumButton(DeviceAlbum album) {
 
-        ScrollView albumButonView = (ScrollView) findViewById(R.id.AlbumButtonView);
-
+        ScrollView albumButtonSView = (ScrollView) findViewById(R.id.AlbumButtonView);
+        TableLayout albumButtonTL = (TableLayout) albumButtonSView.getChildAt(0);
         Button newAlbumButton = new Button(this);
         newAlbumButton.setText(album.getAlbumName());
-        albumButonView.addView(newAlbumButton);
+        albumButtonTL.addView(newAlbumButton);
 
     }
 
