@@ -17,20 +17,23 @@ public class PhotoButton extends android.support.v7.widget.AppCompatImageButton 
         BLANK_BITMAP = Bitmap.createBitmap(DEFAULT_W_PIX, DEFAULT_H_PIX, conf);
     }
 
-    private String imageURI;
-
-    boolean imageLoaded;
+    private boolean imageLoaded;
+    private boolean imageLoading;
 
     private int w_pix;
     private int h_pix;
 
-    public PhotoButton(Context context, String imageURI) {
-        super(context);
+    private String imageUri;
 
-        this.imageURI = imageURI;
+    public PhotoButton(Context context, String imageUri) {
+        super(context);
         super.setImageBitmap(BLANK_BITMAP);
 
+        this.imageUri = imageUri;
+
         imageLoaded = false;
+        imageLoading = false;
+
         w_pix = DEFAULT_W_PIX;
         h_pix = DEFAULT_H_PIX;
     }
@@ -41,10 +44,39 @@ public class PhotoButton extends android.support.v7.widget.AppCompatImageButton 
     }
 
     public void loadImage() {
-        if (!imageLoaded) {
-            setImageBitmap(ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imageURI), w_pix, h_pix, MediaStore.Images.Thumbnails.MICRO_KIND));
-            imageLoaded = true;
-        }
+        setImageBitmap(ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imageUri), w_pix, h_pix, MediaStore.Images.Thumbnails.MICRO_KIND));
+        imageLoaded = true;
+        imageLoading = false;
+    }
+
+    public void setImage(Bitmap image) {
+        setImageBitmap(image);
+        imageLoaded = true;
+        imageLoading = false;
+    }
+
+    public boolean isImageLoaded() {
+        return imageLoaded;
+    }
+
+    public boolean isImageLoading() {
+        return imageLoading;
+    }
+
+    public void setImageLoading(boolean isloading) {
+        this.imageLoading = isloading;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public int getW_pix() {
+        return w_pix;
+    }
+
+    public int getH_pix() {
+        return h_pix;
     }
 
     public void unloadImage() {
