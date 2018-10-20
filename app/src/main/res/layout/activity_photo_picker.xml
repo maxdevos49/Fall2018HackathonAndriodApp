@@ -11,12 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TableLayout
-            android:id="@+id/PhotoPickerTableLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </TableLayout>
     </ScrollView>
+
+    <TableLayout
+        android:id="@+id/PhotoPickerTableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TableLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import com.example.naber.fall2018hackathonandroidapp.R;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DeviceAlbum;
@@ -27,6 +28,8 @@ import java.util.List;
 public class PhotoPicker extends AppCompatActivity implements PhotoChangeListener, ViewTreeObserver.OnScrollChangedListener {
 
     private static final String LOG_ID = PhotoPicker.class.getSimpleName();
+
+    private static final int NUM_BUTTONS_PER_ROW = 4;
 
     private DeviceAlbum album;
     List<PhotoButton> buttons;
@@ -49,11 +52,25 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
 
         displayPhotos();
 
+        // Dirty hack that Timothy Steward endorsed
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                limitLoadedThumbnails();
+
+            }
+        }).start();
+
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
 
         limitLoadedThumbnails();
     }
@@ -73,10 +90,15 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
     private void addPhoto(DevicePhoto photo) {
 
         TableLayout albumButtonTL = findViewById(R.id.PhotoPickerTableLayout);
+        TableRow lastRow = (TableRow) albumButtonTL.getChildAt(albumButtonTL.getChildCount() - 1);
+        if (lastRow == null || lastRow.getChildCount() >= NUM_BUTTONS_PER_ROW) {
+            lastRow = new TableRow(this);
+            albumButtonTL.addView(lastRow);
+        }
 
         PhotoButton newPhotoButton = new PhotoButton(this, photo.getThumbnailUri());
         buttons.add(newPhotoButton);
-        albumButtonTL.addView(newPhotoButton);
+        lastRow.addView(newPhotoButton);
     }
 
     private void limitLoadedThumbnails() {
