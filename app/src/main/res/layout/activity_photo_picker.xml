@@ -8,16 +8,30 @@
 
     <ScrollView
         android:id="@+id/PhotoPickerScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="384dp"
+        tools:layout_editor_absoluteY="0dp">
 
+        <LinearLayout
+            android:id="@+id/PhotoPickerLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
-    <TableLayout
-        android:id="@+id/PhotoPickerTableLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </TableLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/SubmitFilesButton"
+        android:layout_width="60dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:scaleType="center"
+        app:backgroundTint="@color/design_default_color_primary_dark"
+        app:backgroundTintMode="src_over"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/upload" />
 
 </android.support.constraint.ConstraintLayout>

@@ -7,16 +7,17 @@
     tools:context=".photopicker.AlbumPicker">
 
     <ScrollView
-        android:id="@+id/AlbumButtonView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/AlbumPickerScollView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TableLayout
-            android:id="@+id/AlbumButtonViewTable"
+        <LinearLayout
+            android:id="@+id/AlbumPickerLL"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </TableLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

@@ -3,18 +3,30 @@ package com.example.naber.fall2018hackathonandroidapp.photopicker.gui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PhotoButton extends android.support.v7.widget.AppCompatImageButton {
 
     private static final int DEFAULT_W_PIX = 100;
     private static final int DEFAULT_H_PIX = 100;
 
-    private static final Bitmap BLANK_BITMAP;
-    static {
+    private static final Map<String, Bitmap> DEFAULTS = new HashMap<>();
+
+    private static Bitmap getDefault(int width, int height) {
+        String identifier = width + "x" + height;
+        if (DEFAULTS.containsKey(identifier)) {
+            return DEFAULTS.get(identifier);
+        }
+
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        BLANK_BITMAP = Bitmap.createBitmap(DEFAULT_W_PIX, DEFAULT_H_PIX, conf);
+        Bitmap newDefault = Bitmap.createBitmap(width, height, conf);
+        DEFAULTS.put(identifier, newDefault);
+        return newDefault;
     }
 
     private boolean imageLoaded;
@@ -27,20 +39,25 @@ public class PhotoButton extends android.support.v7.widget.AppCompatImageButton 
 
     public PhotoButton(Context context, String imageUri) {
         super(context);
-        super.setImageBitmap(BLANK_BITMAP);
+        super.setBackgroundColor(Color.TRANSPARENT);
+        super.setScaleType(ScaleType.FIT_XY);
 
         this.imageUri = imageUri;
 
         imageLoaded = false;
         imageLoading = false;
 
-        w_pix = DEFAULT_W_PIX;
-        h_pix = DEFAULT_H_PIX;
+        setSize(DEFAULT_W_PIX, DEFAULT_H_PIX);
     }
 
     public void setSize(int w_pix, int h_pix) {
         this.w_pix = w_pix;
         this.h_pix = h_pix;
+
+        if (!imageLoaded) {
+            setImage(getDefault(w_pix, h_pix));
+        }
+
     }
 
     public void loadImage() {
@@ -81,7 +98,7 @@ public class PhotoButton extends android.support.v7.widget.AppCompatImageButton 
 
     public void unloadImage() {
         if (imageLoaded) {
-            setImageBitmap(BLANK_BITMAP);
+            setImageBitmap(getDefault(w_pix, h_pix));
             imageLoaded = false;
         }
     }

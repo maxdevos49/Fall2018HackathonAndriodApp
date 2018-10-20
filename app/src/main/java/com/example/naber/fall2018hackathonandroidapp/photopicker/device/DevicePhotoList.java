@@ -13,6 +13,7 @@ public class DevicePhotoList {
 
     private DevicePhotoList() {
         albums = new ArrayList<>();
+        isLoaded = false;
     }
 
     private static final DevicePhotoList instance = new DevicePhotoList();
@@ -33,6 +34,7 @@ public class DevicePhotoList {
     private Context photoListContext;
 
     private List<DeviceAlbum> albums;
+    private boolean isLoaded;
 
     public void setContext(Context context) {
         this.photoListContext = context;
@@ -55,9 +57,14 @@ public class DevicePhotoList {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                isLoaded = true;
                 loadImages(photoListContext, listener);
             }
         }).start();
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
     }
 
     private void loadImages(Context context, AlbumLoadedListener listener) {

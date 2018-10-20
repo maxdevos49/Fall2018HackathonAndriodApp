@@ -1,18 +1,15 @@
 package com.example.naber.fall2018hackathonandroidapp.photopicker;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Rect;
-import android.media.ThumbnailUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ImageButton;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 
 import com.example.naber.fall2018hackathonandroidapp.R;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DeviceAlbum;
@@ -21,6 +18,7 @@ import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DevicePh
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.PhotoChangeListener;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.PhotoButton;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.PhotoButtonImageLoader;
+import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.TogglablePhotoButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +27,10 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
 
     private static final String LOG_ID = PhotoPicker.class.getSimpleName();
 
-    private static final int NUM_BUTTONS_PER_ROW = 4;
+    private static final int NUM_BUTTONS_PER_ROW = 3;
 
     private DeviceAlbum album;
-    List<PhotoButton> buttons;
+    List<TogglablePhotoButton> buttons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +46,7 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
         }
 
         findViewById(R.id.PhotoPickerScrollView).getViewTreeObserver().addOnScrollChangedListener(this);
+
         album.addListener(this);
 
         displayPhotos();
@@ -76,12 +75,19 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         album.removeListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        album.addListener(this);
+    }
+
     private void displayPhotos() {
+        buttons.clear();
         for (DevicePhoto photo : album.getPhotos()) {
             addPhoto(photo);
         }
@@ -89,16 +95,21 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
 
     private void addPhoto(DevicePhoto photo) {
 
-        TableLayout albumButtonTL = findViewById(R.id.PhotoPickerTableLayout);
-        TableRow lastRow = (TableRow) albumButtonTL.getChildAt(albumButtonTL.getChildCount() - 1);
+        LinearLayout photoPickerLL = findViewById(R.id.PhotoPickerLL);
+        LinearLayout lastRow = (LinearLayout) photoPickerLL.getChildAt(photoPickerLL.getChildCount() - 1);
         if (lastRow == null || lastRow.getChildCount() >= NUM_BUTTONS_PER_ROW) {
-            lastRow = new TableRow(this);
-            albumButtonTL.addView(lastRow);
+            lastRow = new LinearLayout(this);
+            lastRow.setOrientation(LinearLayout.HORIZONTAL);
+            lastRow.setGravity(Gravity.CENTER);
+            photoPickerLL.addView(lastRow);
         }
 
-        PhotoButton newPhotoButton = new PhotoButton(this, photo.getThumbnailUri());
-        buttons.add(newPhotoButton);
-        lastRow.addView(newPhotoButton);
+        TogglablePhotoButton button = new TogglablePhotoButton(this, photo.getThumbnailUri());
+        button.setSize(200,200);
+        buttons.add(button);
+        button.setPadding(10,10,10,10);
+        lastRow.addView(button);
+
     }
 
     private void limitLoadedThumbnails() {
@@ -138,6 +149,41 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
     @Override
     public void onScrollChanged() {
         limitLoadedThumbnails();
+    }
+
+    public void disableFloatingButton() {
+
+        FloatingActionButton button = findViewById(R.id.SubmitFilesButton);
+        button.setBackgroundColor(Color.GRAY);
+
+    }
+
+    public void enableFloatingButton() {
+
+        FloatingActionButton button = findViewById(R.id.SubmitFilesButton);
+        button.setBackgroundColor(Color.parseColor("#303f9f"));
+
+    }
+
+    private class PhotoOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+
+            boolean oneClicked = false;
+            for (TogglablePhotoButton toggleButton : buttons) {
+                if (toggleButton.isClicked()) {
+                    oneClicked = true;
+                }
+            }
+
+            if (!oneClicked) {
+                disableFloatingButton();
+            } else {
+                enableFloatingButton();
+            }
+
+        }
     }
 
 }
