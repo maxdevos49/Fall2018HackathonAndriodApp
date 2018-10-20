@@ -1,6 +1,10 @@
 package com.example.naber.fall2018hackathonandroidapp.photopicker.device;
 
-public class DevicePhoto {
+import java.io.Serializable;
+
+public class DevicePhoto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String photoId;
     private String photoUri;

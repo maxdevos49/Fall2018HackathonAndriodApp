@@ -1,11 +1,13 @@
 package com.example.naber.fall2018hackathonandroidapp.photopicker;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -14,6 +16,7 @@ import com.example.naber.fall2018hackathonandroidapp.R;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.AlbumLoadedListener;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DeviceAlbum;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DevicePhotoList;
+import com.example.naber.fall2018hackathonandroidapp.photopicker.device.PhotoPicker;
 
 public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListener {
 
@@ -53,7 +56,10 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
 
         ScrollView albumButtonSView = (ScrollView) findViewById(R.id.AlbumButtonView);
         TableLayout albumButtonTL = (TableLayout) albumButtonSView.getChildAt(0);
+
         Button newAlbumButton = new Button(this);
+        newAlbumButton.setOnClickListener(new AlbumButtonClickListener(album.getAlbumName(), album.getAlbumId()));
+
         newAlbumButton.setText(album.getAlbumName());
         albumButtonTL.addView(newAlbumButton);
 
@@ -80,4 +86,28 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
         }
         // TODO: Handle permissions not granted
     }
+
+    private void openAlbum(int id) {
+        Intent intent = new Intent(this, PhotoPicker.class);
+        intent.putExtra("Album", photoList.getAlbum(id));
+        startActivity(intent);
+    }
+
+    private class AlbumButtonClickListener implements View.OnClickListener {
+
+        private String albumName;
+        private int albumId;
+
+        public AlbumButtonClickListener(String albumName, int albumId) {
+            this.albumName = albumName;
+            this.albumId = albumId;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.i(LOG_ID, "User has clicked on album name: " + albumName + " id: " + albumId);
+            openAlbum(albumId);
+        }
+    }
+
 }

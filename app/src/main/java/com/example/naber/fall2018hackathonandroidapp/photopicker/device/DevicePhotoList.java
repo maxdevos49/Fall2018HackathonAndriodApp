@@ -65,7 +65,7 @@ public class DevicePhotoList {
                 String imageUri = cur.getString(imageUriIndex);
                 String imageId = cur.getString(imageIdColumn);
 
-                DeviceAlbum album = getAlbum(bucketName, bucketId);
+                DeviceAlbum album = getAlbum(bucketId);
 
                 if (album == null) {
                     Log.i(LOG_ID, "Creating new Device Album with name: " + bucketName + " id: " + bucketId);
@@ -85,7 +85,7 @@ public class DevicePhotoList {
 
     }
 
-    private DeviceAlbum getAlbum(String name, int id) {
+    public DeviceAlbum getAlbum(int id) {
 
         for (DeviceAlbum album : albums) {
             if (id == album.getAlbumId()) {
