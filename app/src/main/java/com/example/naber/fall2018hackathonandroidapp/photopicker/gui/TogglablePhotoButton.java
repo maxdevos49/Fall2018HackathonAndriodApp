@@ -27,11 +27,12 @@ public class TogglablePhotoButton extends PhotoButton {
         }
 
         isClicked = false;
-        super.setOnClickListener((view) -> {
-            isClicked = !isClicked;
-            invalidate();
-            Log.i(LOG_ID, "Toggling state to: " + isClicked);
-        });
+    }
+
+    public void toggle() {
+        isClicked = !isClicked;
+        invalidate();
+        Log.i(LOG_ID, "Toggling state to: " + isClicked);
     }
 
     public boolean isClicked() {

@@ -1,9 +1,11 @@
 package com.example.naber.fall2018hackathonandroidapp.photopicker;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,7 +32,9 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
     private static final int NUM_BUTTONS_PER_ROW = 3;
 
     private DeviceAlbum album;
-    List<TogglablePhotoButton> buttons;
+    private List<TogglablePhotoButton> buttons;
+
+    private boolean canUpload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,9 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
 
             }
         }).start();
+
+        checkIfCanUpload();
+        findViewById(R.id.SubmitFilesButton).setOnClickListener(new UploadButtonOnClickListener());
 
     }
 
@@ -106,6 +113,16 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
 
         TogglablePhotoButton button = new TogglablePhotoButton(this, photo.getThumbnailUri());
         button.setSize(200,200);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Fix this ugly piece of garbage
+                if (v instanceof TogglablePhotoButton) {
+                    ((TogglablePhotoButton) v).toggle();
+                }
+                checkIfCanUpload();
+            }
+        });
         buttons.add(button);
         button.setPadding(10,10,10,10);
         lastRow.addView(button);
@@ -154,36 +171,44 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
     public void disableFloatingButton() {
 
         FloatingActionButton button = findViewById(R.id.SubmitFilesButton);
-        button.setBackgroundColor(Color.GRAY);
+        button.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+        button.invalidate();
+        canUpload = false;
 
     }
 
     public void enableFloatingButton() {
 
         FloatingActionButton button = findViewById(R.id.SubmitFilesButton);
-        button.setBackgroundColor(Color.parseColor("#303f9f"));
+        button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#303f9f")));
+        button.invalidate();
+        canUpload = true;
 
     }
 
-    private class PhotoOnClickListener implements View.OnClickListener {
+    public void checkIfCanUpload() {
+        boolean oneClicked = false;
+        for (TogglablePhotoButton toggleButton : buttons) {
+            if (toggleButton.isClicked()) {
+                oneClicked = true;
+                break;
+            }
+        }
+
+        if (!oneClicked) {
+            disableFloatingButton();
+        } else {
+            enableFloatingButton();
+        }
+    }
+
+    private class UploadButtonOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
 
-            boolean oneClicked = false;
-            for (TogglablePhotoButton toggleButton : buttons) {
-                if (toggleButton.isClicked()) {
-                    oneClicked = true;
-                }
-            }
-
-            if (!oneClicked) {
-                disableFloatingButton();
-            } else {
-                enableFloatingButton();
-            }
-
         }
+
     }
 
 }
