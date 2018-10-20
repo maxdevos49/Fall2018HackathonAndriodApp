@@ -3,12 +3,16 @@ package com.example.naber.fall2018hackathonandroidapp.photopicker;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 
@@ -16,7 +20,7 @@ import com.example.naber.fall2018hackathonandroidapp.R;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.AlbumLoadedListener;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DeviceAlbum;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DevicePhotoList;
-import com.example.naber.fall2018hackathonandroidapp.photopicker.device.PhotoPicker;
+import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.PhotoButton;
 
 public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListener {
 
@@ -33,7 +37,8 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_picker);
 
-        photoList = new DevicePhotoList(this);
+        photoList = DevicePhotoList.getInstance();
+        photoList.setContext(this);
 
         insureAdequatePermission();
     }
@@ -54,13 +59,13 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
 
     private void addAlbumButton(DeviceAlbum album) {
 
-        ScrollView albumButtonSView = (ScrollView) findViewById(R.id.AlbumButtonView);
+        ScrollView albumButtonSView = findViewById(R.id.AlbumButtonView);
         TableLayout albumButtonTL = (TableLayout) albumButtonSView.getChildAt(0);
 
-        Button newAlbumButton = new Button(this);
+        PhotoButton newAlbumButton = new PhotoButton(this, album.getCoverPhoto().getThumbnailUri());
+        newAlbumButton.loadImage();
         newAlbumButton.setOnClickListener(new AlbumButtonClickListener(album.getAlbumName(), album.getAlbumId()));
 
-        newAlbumButton.setText(album.getAlbumName());
         albumButtonTL.addView(newAlbumButton);
 
     }
@@ -89,7 +94,7 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
 
     private void openAlbum(int id) {
         Intent intent = new Intent(this, PhotoPicker.class);
-        intent.putExtra("Album", photoList.getAlbum(id));
+        intent.putExtra("albumId", id);
         startActivity(intent);
     }
 

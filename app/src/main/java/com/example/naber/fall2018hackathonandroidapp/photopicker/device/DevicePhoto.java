@@ -8,10 +8,12 @@ public class DevicePhoto implements Serializable {
 
     private String photoId;
     private String photoUri;
+    private String thumbnailUri;
 
-    public DevicePhoto(String photoId, String photoUri) {
+    public DevicePhoto(String photoId, String photoUri, String thumbnailUri) {
         this.photoId = photoId;
         this.photoUri = photoUri;
+        this.thumbnailUri = thumbnailUri;
     }
 
     public String getPhotoId() {
@@ -21,4 +23,6 @@ public class DevicePhoto implements Serializable {
     public String getPhotoUri() {
         return photoUri;
     }
+
+    public String getThumbnailUri() { return thumbnailUri; }
 }
