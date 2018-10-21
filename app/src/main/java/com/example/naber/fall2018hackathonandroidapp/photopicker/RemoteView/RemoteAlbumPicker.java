@@ -71,7 +71,7 @@ public class RemoteAlbumPicker extends AppCompatActivity implements RemoteAlbumL
     public void albumLoaded(RemoteAlbum album) {
 
         Log.i(LOG_ID, "Loading image for: " + album.getCoverPhoto().getFilePath());
-        HTTPRequest.loadImage(album.getCoverPhoto().getFilePath(), new ImageLoadResponseListener() {
+        HTTPRequest.loadImage(album.getCoverPhoto().getSmallThumbnailName(), new ImageLoadResponseListener() {
 
             @Override
             public void imageLoaded(Bitmap image) {

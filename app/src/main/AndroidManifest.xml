@@ -12,18 +12,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".photopicker.AlbumPicker" />
-        <activity android:name=".photopicker.PhotoPicker" />
-        <activity android:name="com.MainMenu.AppMainMenu">
+        <activity android:name=".photopicker.AlbumPicker" android:label="Photos on your device"/>
+        <activity android:name=".photopicker.PhotoPicker" android:label="Photos on your device"/>
+        <activity android:name="com.MainMenu.AppMainMenu" android:label="PhotoCenter">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".photopicker.RemoteView.RemoteAlbumPicker" />
-        <activity android:name="com.Settings.Settings" />
-        <activity android:name=".photopicker.RemoteView.RemoteAlbumViewer"></activity>
+        <activity android:name=".photopicker.RemoteView.RemoteAlbumPicker" android:label="Your PhotoCenter Albums"/>
+        <activity android:name="com.Settings.Settings" android:label="Settings"/>
+        <activity android:name=".photopicker.RemoteView.RemoteAlbumViewer" android:label="Your PhotoCenter Albums"></activity>
     </application>
 
 </manifest>

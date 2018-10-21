@@ -141,7 +141,7 @@ public class RemoteAlbumViewer extends AppCompatActivity implements RemotePhotoC
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels - 100;
 
-        RemotePhotoButton button = new RemotePhotoButton(this, photo.getFilePath());
+        RemotePhotoButton button = new RemotePhotoButton(this, photo.getLargeThumbnailName());
         button.setSize(width,width);
         button.setPadding(10,10,10,10);
         lastRow.addView(button);
