@@ -5,7 +5,8 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 
-import com.example.naber.fall2018hackathonandroidapp.photopicker.Utils;
+import com.Util;
+import com.http.HTTPRequest;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -31,7 +32,7 @@ public class PhotoButtonImageLoader {
 
                     final Bitmap image = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(button.getImageUri()), button.getW_pix(), button.getH_pix(), MediaStore.Images.Thumbnails.MICRO_KIND);
 
-                    Utils.runonUiThread(new Runnable() {
+                    Util.runonUiThread(new Runnable() {
                         @Override
                         public void run() {
                             button.setImage(image);

@@ -6,16 +6,20 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.Util;
 import com.example.naber.fall2018hackathonandroidapp.R;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.AlbumLoadedListener;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DeviceAlbum;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.device.DevicePhotoList;
-import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.PhotoButton;
+import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.TitledPhotoButton;
+import com.http.HTTPRequest;
 
 public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListener {
 
@@ -32,6 +36,7 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(R.drawable.background);
         setContentView(R.layout.activity_album_picker);
 
         photoList = DevicePhotoList.getInstance();
@@ -48,7 +53,7 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
 
     @Override
     public void albumLoaded(final DeviceAlbum album) {
-        Utils.runonUiThread(new Runnable() {
+        Util.runonUiThread(new Runnable() {
             @Override
             public void run() {
                 addAlbumButton(album);
@@ -60,6 +65,10 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
     protected void onResume() {
         Log.i(LOG_ID, "Resuming");
         super.onResume();
+        ((LinearLayout) findViewById(R.id.AlbumPickerLL)).removeAllViews();
+        for (DeviceAlbum album : photoList.getAlbums()) {
+            addAlbumButton(album);
+        }
     }
 
     private void addAlbumButton(DeviceAlbum album) {
@@ -73,9 +82,15 @@ public class AlbumPicker extends AppCompatActivity implements AlbumLoadedListene
             albumPickerLL.addView(lastRow);
         }
 
-        PhotoButton button = new PhotoButton(this, album.getCoverPhoto().getThumbnailUri());
-        button.setSize(200,200);
+        TitledPhotoButton button = new TitledPhotoButton(this, album.getCoverPhoto().getThumbnailUri());
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels - 100;
+        button.setTitle(album.getAlbumName());
+        button.setSize(width / 3,width / 3);
         button.setPadding(10,10,10,10);
+        Log.i(LOG_ID, width + "");
         button.loadImage();
         button.setOnClickListener(new AlbumButtonClickListener(album.getAlbumName(), album.getAlbumId()));
         lastRow.addView(button);

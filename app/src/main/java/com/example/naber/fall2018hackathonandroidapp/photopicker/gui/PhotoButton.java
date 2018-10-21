@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,6 @@ public class PhotoButton extends android.support.v7.widget.AppCompatImageButton 
 
     public PhotoButton(Context context, String imageUri) {
         super(context);
-        super.setBackgroundColor(Color.TRANSPARENT);
         super.setScaleType(ScaleType.FIT_XY);
 
         this.imageUri = imageUri;

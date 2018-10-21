@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -21,9 +21,12 @@ import com.example.naber.fall2018hackathonandroidapp.photopicker.device.PhotoCha
 import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.PhotoButton;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.PhotoButtonImageLoader;
 import com.example.naber.fall2018hackathonandroidapp.photopicker.gui.TogglablePhotoButton;
+import com.http.HTTPRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PhotoPicker extends AppCompatActivity implements PhotoChangeListener, ViewTreeObserver.OnScrollChangedListener {
 
@@ -33,18 +36,22 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
 
     private DeviceAlbum album;
     private List<TogglablePhotoButton> buttons;
+    private Map<TogglablePhotoButton, DevicePhoto> buttonToPhoto;
 
     private boolean canUpload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(R.drawable.background);
         setContentView(R.layout.activity_photo_picker);
 
         Log.i(LOG_ID, "Creating photo picker from album with id: " + getIntent().getIntExtra("albumId", Integer.MAX_VALUE));
 
         album = DevicePhotoList.getInstance().getAlbum(getIntent().getIntExtra("albumId", Integer.MAX_VALUE));
         buttons = new ArrayList<>();
+        buttonToPhoto = new HashMap<>();
+
         if (album == null) {
             throw new IllegalStateException("Invalid album number");
         }
@@ -95,6 +102,7 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
 
     private void displayPhotos() {
         buttons.clear();
+        buttonToPhoto.clear();
         for (DevicePhoto photo : album.getPhotos()) {
             addPhoto(photo);
         }
@@ -112,7 +120,11 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
         }
 
         TogglablePhotoButton button = new TogglablePhotoButton(this, photo.getThumbnailUri());
-        button.setSize(200,200);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels - 100;
+        button.setSize(width / NUM_BUTTONS_PER_ROW,width / NUM_BUTTONS_PER_ROW);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,6 +136,7 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
             }
         });
         buttons.add(button);
+        buttonToPhoto.put(button, photo);
         button.setPadding(10,10,10,10);
         lastRow.addView(button);
 
@@ -202,11 +215,27 @@ public class PhotoPicker extends AppCompatActivity implements PhotoChangeListene
         }
     }
 
+    public void uploadSelected() {
+
+        List<String> photosToUpload = new ArrayList<>();
+        for (TogglablePhotoButton button : buttons) {
+            if (button.isClicked()) {
+                photosToUpload.add(buttonToPhoto.get(button).getPhotoUri());
+                button.toggle();
+            }
+        }
+
+        HTTPRequest.upload(photosToUpload);
+
+    }
+
     private class UploadButtonOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-
+            if (canUpload) {
+                uploadSelected();
+            }
         }
 
     }
