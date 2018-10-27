@@ -1,5 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.naber.fall2018hackathonandroidapp">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -7,5 +11,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" />
+        android:theme="@style/AppTheme">
+        <activity android:name=".photopicker.AlbumPicker" android:label="Photos on your device"/>
+        <activity android:name=".photopicker.PhotoPicker" android:label="Photos on your device"/>
+        <activity android:name="com.MainMenu.AppMainMenu" android:label="PhotoCenter">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".photopicker.RemoteView.RemoteAlbumPicker" android:label="Your PhotoCenter Albums"/>
+        <activity android:name="com.Settings.Settings" android:label="Settings"/>
+        <activity android:name=".photopicker.RemoteView.RemoteAlbumViewer" android:label="Your PhotoCenter Albums"></activity>
+    </application>
+
 </manifest>
